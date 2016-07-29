@@ -1,0 +1,108 @@
+---
+jobs:
+- name: unit-test
+  public: true
+  serial: true
+  plan:
+  - get: quotes-service
+    trigger: true
+  - task: unit-test-task
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: java
+          tag: '8'
+      inputs:
+        - name: quotes-service
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          cd quotes-service
+          ./gradlew test
+      params:
+        TERM: dumb
+        version: 0.4.0
+
+- name: integration-test
+  public: true
+  serial: true
+  plan:
+  - get: quotes-service
+    trigger: true
+    passed: [unit-test]
+  - task: unit-test-task
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: java
+          tag: '8'
+      inputs:
+        - name: quotes-service
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          cd quotes-service
+          ./gradlew integration-test
+      params:
+        TERM: dumb
+        version: 0.4.0
+
+- name: deploy
+  public: true
+  serial: true
+  plan:
+  - get: quotes-service
+    passed: [integration-test]
+    trigger: true
+  - task: build-task
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: java
+          tag: '8'
+      inputs:
+        - name: quotes-service
+      outputs:
+        - name: built-project
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          cd quotes-service
+          ./gradlew assemble manifestFilter
+          cp -arv build/* ../built-project
+      params:
+        TERM: dumb
+        version: 0.4.0
+  - put: cf-prod
+    params:
+      manifest: built-project/manifest.yml
+      environment_variables:
+        CF_TARGET: {{prod_cf_api}}
+
+resources:
+- name: quotes-service
+  type: git
+  source:
+    uri: https://github.com/avade/quotes-service
+
+- name: cf-prod
+  type: cf
+  source:
+    api: {{prod_cf_api}}
+    username: {{prod_cf_username}}
+    password: {{prod_cf_password}}
+    organization: {{prod_cf_org}}
+    space: {{prod_cf_org}}
+    skip_cert_check: true
