@@ -1,11 +1,4 @@
 ---
-jobs:
-- name: unit-test
-  public: true
-  serial: true
-  plan:
-  - get: quotes-service
-    trigger: true
 
 resources:
 - name: quotes-service

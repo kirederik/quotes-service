@@ -1,0 +1,34 @@
+---
+jobs:
+- name: unit-test
+  public: true
+  serial: true
+  plan:
+  - get: quotes-service
+    trigger: true
+  - task: unit-test-task
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: java
+          tag: '8'
+      inputs:
+        - name: quotes-service
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          cd quotes-service
+          ./gradlew test
+      params:
+        TERM: dumb
+        version: 0.4.0
+
+resources:
+- name: quotes-service
+  type: git
+  source:
+    uri: https://github.com/avade/quotes-service

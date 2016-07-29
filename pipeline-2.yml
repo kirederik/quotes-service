@@ -32,7 +32,7 @@ jobs:
   serial: true
   plan:
   - get: quotes-service
-    passed: [integration-test]
+    passed: [unit-test]
     trigger: true
   - task: build-task
     config:
@@ -76,5 +76,5 @@ resources:
     username: {{prod_cf_username}}
     password: {{prod_cf_password}}
     organization: {{prod_cf_org}}
-    space: {{prod_cf_org}}
+    space: {{prod_cf_space}}
     skip_cert_check: true
