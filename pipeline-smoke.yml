@@ -62,10 +62,10 @@ jobs:
       manifest: built-project/manifest.yml
       environment_variables:
         CF_TARGET: {{prod_cf_api}}
-- name: something-every-5m
+- name: smoke-test
   plan:
   - get: quotes-service
-    trigger: true
+    passed: [deploy]
   - get: smoke-test-timer
     trigger: true
   - task: smoke
@@ -82,9 +82,7 @@ jobs:
         path: sh
         args:
         - -exc
-        - |
-          cd quotes-service
-          ./gradlew test
+        - echo "smoke-test"
 
 resources:
 - name: quotes-service
