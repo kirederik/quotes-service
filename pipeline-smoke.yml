@@ -64,6 +64,8 @@ jobs:
         CF_TARGET: {{prod_cf_api}}
 - name: something-every-5m
   plan:
+  - get: quotes-service
+    trigger: true
   - get: smoke-test-timer
     trigger: true
   - task: smoke
@@ -82,7 +84,7 @@ jobs:
         - -exc
         - |
           cd quotes-service
-          ./gradlew smoke-test
+          ./gradlew test
 
 resources:
 - name: quotes-service
