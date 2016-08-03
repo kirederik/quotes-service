@@ -41,6 +41,8 @@ println version
 
 test { finalizedBy jacocoTestReport }
 
+smoke-test { }
+
 task manifestFilter(type: Copy) {
 		from 'manifest-unversioned.yml'
 		into "${buildDir}/"
