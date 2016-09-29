@@ -1,4 +1,20 @@
 ---
+resources:
+- name: quotes-service
+  type: git
+  source:
+    uri: https://github.com/kirederik/quotes-service
+
+- name: cf-prod
+  type: cf
+  source:
+    api: {{prod_cf_api}}
+    username: {{prod_cf_username}}
+    password: {{prod_cf_password}}
+    organization: {{prod_cf_org}}
+    space: {{prod_cf_space}}
+    skip_cert_check: true
+
 jobs:
 - name: unit-test
   public: true
@@ -62,19 +78,3 @@ jobs:
       manifest: built-project/manifest.yml
       environment_variables:
         CF_TARGET: {{prod_cf_api}}
-
-resources:
-- name: quotes-service
-  type: git
-  source:
-    uri: https://github.com/avade/quotes-service
-
-- name: cf-prod
-  type: cf
-  source:
-    api: {{prod_cf_api}}
-    username: {{prod_cf_username}}
-    password: {{prod_cf_password}}
-    organization: {{prod_cf_org}}
-    space: {{prod_cf_space}}
-    skip_cert_check: true

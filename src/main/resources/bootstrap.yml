@@ -2,6 +2,9 @@ spring:
   profiles.active: local
   application:
      name: quotes-service
+security:
+  basic:
+    enabled: false
 info:
   build:
     group: ${group}

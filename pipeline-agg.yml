@@ -82,7 +82,7 @@ resources:
 - name: quotes-service
   type: git
   source:
-    uri: https://github.com/avade/quotes-service
+    uri: https://github.com/kirederik/quotes-service
 
 - name: cf-prod
   type: cf
