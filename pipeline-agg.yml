@@ -69,7 +69,7 @@ jobs:
   - put: tweet
     params:
       status: >
-        About to deploy from @springone (build ${BUILD_ID})
+        About to deploy from Amsterdam!  (build ${BUILD_ID})
         from the @concourseci twitter resource!
 
 resource_types:
